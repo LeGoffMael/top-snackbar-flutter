@@ -43,6 +43,9 @@ OverlayEntry? _previousEntry;
 /// The [dismissDirection] argument specify in which direction the snackbar
 /// can be dismissed. This argument is only used when [dismissType] is equal
 /// to `TopSnackBarDismissType.onSwipe`. Defaults to `DismissDirection.up`
+///
+/// The [enableSafeArea] argument is used to specify the `top` argument of the
+/// [SafeArea] widget that wrap the snackbar. Defaults to `true`.
 void showTopSnackBar(
   BuildContext context,
   Widget child, {
@@ -58,6 +61,7 @@ void showTopSnackBar(
   Curve reverseCurve = Curves.linearToEaseOut,
   TopSnackBarDismissType dismissType = TopSnackBarDismissType.onTap,
   DismissDirection dismissDirection = DismissDirection.up,
+  bool enableSafeArea = true,
 }) async {
   overlayState ??= Overlay.of(context);
   late OverlayEntry overlayEntry;
@@ -82,6 +86,7 @@ void showTopSnackBar(
         reverseCurve: reverseCurve,
         dismissType: dismissType,
         dismissDirection: dismissDirection,
+        enableSafeArea: enableSafeArea,
       );
     },
   );
@@ -108,6 +113,7 @@ class TopSnackBar extends StatefulWidget {
   final Curve reverseCurve;
   final TopSnackBarDismissType dismissType;
   final DismissDirection dismissDirection;
+  final bool enableSafeArea;
 
   TopSnackBar({
     Key? key,
@@ -124,6 +130,7 @@ class TopSnackBar extends StatefulWidget {
     required this.reverseCurve,
     this.dismissType = TopSnackBarDismissType.onTap,
     this.dismissDirection = DismissDirection.up,
+    this.enableSafeArea = true,
   }) : super(key: key);
 
   @override
@@ -201,7 +208,10 @@ class _TopSnackBarState extends State<TopSnackBar>
       right: widget.padding.right,
       child: SlideTransition(
         position: offsetAnimation as Animation<Offset>,
-        child: SafeArea(child: _buildDismissableChild()),
+        child: SafeArea(
+          top: widget.enableSafeArea,
+          child: _buildDismissableChild(),
+        ),
       ),
     );
   }
